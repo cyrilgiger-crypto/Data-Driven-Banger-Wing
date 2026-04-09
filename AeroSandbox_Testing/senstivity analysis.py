@@ -1,3 +1,5 @@
+## run %matplotlib widget in Jupyter for interactive plots
+
 # %%
 from aero_eval_fct import main as aero_eval
 import numpy as np
@@ -26,7 +28,7 @@ BOUNDS = np.array([
 # %%
 # Sample design space (LHS)
 BOUNDS_ARRAY = np.array(BOUNDS)
-samples_norm = qmc.LatinHypercube(len(BOUNDS_ARRAY)).random(100)
+samples_norm = qmc.LatinHypercube(len(BOUNDS_ARRAY)).random(500)
 samples_scaled = samples_norm * (BOUNDS_ARRAY[:, 1] - BOUNDS_ARRAY[:, 0]) + BOUNDS_ARRAY[:, 0]
 
 
@@ -85,7 +87,7 @@ for name, scale in zip(param_names, length_scales):
 # %%
 export_toggle = False
 # GPR surface projection
-param_idx = (6, 6)  # zero-based indices
+param_idx = (0, 2)  # zero-based indices
 grid_res = 50
 
 # actual ranges for selected parameters
@@ -97,7 +99,7 @@ y_range = np.linspace(y_min, y_max, grid_res)
 X_grid, Y_grid = np.meshgrid(x_range, y_range)
 
 # build normalized inputs for prediction (GPR was trained on samples_norm)
-X_plot = np.full((grid_res**2, n_features), 0.5)
+X_plot = np.full((grid_res**2, n_features), 0.8)
 X_plot[:, param_idx[0]] = (X_grid.ravel() - x_min) / (x_max - x_min)
 X_plot[:, param_idx[1]] = (Y_grid.ravel() - y_min) / (y_max - y_min)
 
@@ -163,6 +165,5 @@ if export_toggle:
     filepath = os.path.join(plot_dir, filename)
     plt.savefig(filepath, dpi=300, bbox_inches="tight")
 plt.show()
-
 
 # %%
