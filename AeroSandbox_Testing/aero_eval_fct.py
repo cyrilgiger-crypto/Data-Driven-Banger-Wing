@@ -114,6 +114,7 @@ def main(span=0.8, root_chord=0.2, tip_chord=0.1, sweep=20, root_twist=5*np.pi/1
     )
 
     # -----------------------
+    
     # Run VLM
     # -----------------------
 
