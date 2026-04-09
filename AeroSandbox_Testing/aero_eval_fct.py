@@ -114,7 +114,7 @@ def main(span=0.8, root_chord=0.2, tip_chord=0.1, sweep=20, root_twist=5*np.pi/1
     )
 
     # -----------------------
-    
+
     # Run VLM
     # -----------------------
 
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     sweep       = 0.320989 
     root_twist  = 0.099388 
     tip_twist   = -0.015257 
-    A           = 1.000000
+    A           = 2.000000
     c           = 0.300000
     delta       = 0.011943
 
