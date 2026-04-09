@@ -83,8 +83,9 @@ for name, scale in zip(param_names, length_scales):
 
 
 # %%
+export_toggle = False
 # GPR surface projection
-param_idx = (3, 4)  # zero-based indices
+param_idx = (6, 6)  # zero-based indices
 grid_res = 50
 
 # actual ranges for selected parameters
@@ -123,11 +124,12 @@ ax.view_init(elev=30, azim=-45)
 plt.tight_layout()
 
 # Export figure
-plot_dir = "plot"
-os.makedirs(plot_dir, exist_ok=True)
-filename = f"3D surface_{param_labels[param_idx[0]]}_{param_labels[param_idx[1]]}.png"
-filepath = os.path.join(plot_dir, filename)
-plt.savefig(filepath, dpi=300, bbox_inches="tight")
+if export_toggle:
+    plot_dir = "plot"
+    os.makedirs(plot_dir, exist_ok=True)
+    filename = f"3D surface_{param_labels[param_idx[0]]}_{param_labels[param_idx[1]]}.png"
+    filepath = os.path.join(plot_dir, filename)
+    plt.savefig(filepath, dpi=300, bbox_inches="tight")
 plt.show()
 
 #### Top-down contour view
@@ -137,7 +139,7 @@ fig2, ax2 = plt.subplots(figsize=(8, 6), facecolor="white")
 levels = 30
 cf = ax2.contourf(X_grid, Y_grid, Z_grid, levels=levels, cmap="jet")
 cs = ax2.contour(X_grid, Y_grid, Z_grid, levels=levels, colors="k", linewidths=0.3, alpha=0.4)
-fig2.colorbar(cf, ax=ax2, shrink=0.8, pad=0.02)
+fig2.colorbar(cf, ax=ax2, shrink=0.8, pad=0.02, label='Aero Efficiency (C_D / C_L)')
 
 # Training data points (actual parameter values)
 ax2.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]],
@@ -146,7 +148,7 @@ ax2.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]],
 param_labels = {i: name for i, name in enumerate(param_names)}
 ax2.set_xlabel(param_labels[param_idx[0]])
 ax2.set_ylabel(param_labels[param_idx[1]])
-ax2.set_title("Top-Down GPR Surface")
+# ax2.set_title("Top-Down GPR Surface")
 
 ax2.set_aspect("auto")
 ax2.grid(True, which="major", alpha=0.3)
@@ -154,15 +156,13 @@ ax2.grid(True, which="major", alpha=0.3)
 plt.tight_layout()
 
 # Export figure
-plot_dir = "plot"
-os.makedirs(plot_dir, exist_ok=True)
-filename = f"2D surface_{param_labels[param_idx[0]]}_{param_labels[param_idx[1]]}.png"
-filepath = os.path.join(plot_dir, filename)
-plt.savefig(filepath, dpi=300, bbox_inches="tight")
+if export_toggle:
+    plot_dir = "plot"
+    os.makedirs(plot_dir, exist_ok=True)
+    filename = f"2D surface_{param_labels[param_idx[0]]}_{param_labels[param_idx[1]]}.png"
+    filepath = os.path.join(plot_dir, filename)
+    plt.savefig(filepath, dpi=300, bbox_inches="tight")
 plt.show()
 
 
 # %%
-
-
-
