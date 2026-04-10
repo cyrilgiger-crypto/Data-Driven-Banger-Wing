@@ -96,7 +96,6 @@ for name, scale in zip(param_names, length_scales):
 
 ###########################################################################################################
 # %%
-# heyo repo check
 # Train GPR on Cma 
 
 gpr_Cma = GaussianProcessRegressor(
