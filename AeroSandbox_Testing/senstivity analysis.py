@@ -70,6 +70,7 @@ for i, sample in enumerate(samples_scaled):
 
 #######################################################################################################
 # %%
+
 # Train GPR on Aero Efficiency
 n_features = samples_norm.shape[1]
 kernel = C(1.0, (1e-3, 1e3)) * RBF(
@@ -95,6 +96,7 @@ for name, scale in zip(param_names, length_scales):
 
 ###########################################################################################################
 # %%
+# heyo repo check
 # Train GPR on Cma 
 
 gpr_Cma = GaussianProcessRegressor(
