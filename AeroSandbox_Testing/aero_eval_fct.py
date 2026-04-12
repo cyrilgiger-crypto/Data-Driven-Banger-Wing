@@ -96,11 +96,13 @@ def main(span=0.8, root_chord=0.2, tip_chord=0.1, sweep=20, root_twist=5*np.pi/1
     # -----------------------
     # Create airplane
     # -----------------------
+    xi_CG = 0.5 # x% of root chord
     airplane = asb.Airplane(
         wings=[wing, winglet],
         s_ref=s_ref,
         b_ref=b_ref,
         c_ref=c_ref,
+        xyz_ref=[root_chord * xi_CG, 0, 0]
     )
 
     # -----------------------
@@ -137,10 +139,14 @@ def main(span=0.8, root_chord=0.2, tip_chord=0.1, sweep=20, root_twist=5*np.pi/1
     # print("CD:", scalar(results["CD"]))
     # print("Lift:", scalar(results["L"]))
     # print("Drag:", scalar(results["D"]))
-    print("Aero Efficiency:", scalar(aero_efficiency))
-    print("dCm/da:", scalar(results["Cma"]), " < 0")
-    print("dCl/db:", scalar(results["Clb"]), " < 0")
-    print("dCn/db:", scalar(results["Cnb"]), " > 0")
+    print("-" * 30)
+    print("Aero Efficiency:", f"{scalar(aero_efficiency):.4g}")
+    print("dCm/da:", f"{scalar(results['Cma']):.4g}", " < 0")
+    print("dCl/db:", f"{scalar(results['Clb']):.4g}", " < 0")
+    print("dCn/db:", f"{scalar(results['Cnb']):.4g}", " > 0")
+    print("x_np:", f"{scalar(results['x_np'])*100:.4g}", "cm > x_CG: ", f"{xi_CG*root_chord*100:.4g}"," cm")
+    print("-" * 30)
+    print("Cm: ", f"{scalar(results['Cm']):.4g}", " < 0")
 
     # -----------------------
     # Spanwise lift distribution (sum over chordwise panels)
@@ -205,7 +211,7 @@ if __name__ == "__main__":
     sweep       = 0.320989 
     root_twist  = 0.099388 
     tip_twist   = -0.015257 
-    A           = 2.000000
+    A           = 1.000000
     c           = 0.300000
     delta       = 0.011943
 

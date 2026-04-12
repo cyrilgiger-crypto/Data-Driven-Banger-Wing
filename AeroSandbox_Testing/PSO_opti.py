@@ -11,11 +11,11 @@ from aero_eval_fct import main as aero_eval
 BOUNDS: List[Tuple[float, float]] = [
     (0.2, 0.9),                        # taper ratio
     (1.0, 20.0),                       # aspect ratio
-    (np.deg2rad(-70), np.deg2rad(70)),  # sweep_deg [rad]
-    (np.deg2rad(-45), np.deg2rad(45)),  # root_twist [rad]
-    (np.deg2rad(-45), np.deg2rad(45)),   # tip_twist [rad]
-    (0.0, 1.0),                         # A (seagull dihedral shape)
-    (0.3, 1.0),                         # c (seagull dihedral shape)
+    (np.deg2rad(-70), np.deg2rad(70)), # sweep_deg [rad]
+    (np.deg2rad(-45), np.deg2rad(45)), # root_twist [rad]
+    (np.deg2rad(-45), np.deg2rad(45)), # tip_twist [rad]
+    (0.0, 1.0),                        # A (seagull dihedral shape)
+    (0.3, 1.0),                        # c (seagull dihedral shape)
     (np.deg2rad(-45), np.deg2rad(45)), # delta [rad]
 ]
 

@@ -11,8 +11,8 @@ from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 import os
 
 ##############################################################################################################
-# Define paramter bounds
 # %%
+# Define parameter bounds
 # Define bounds
 BOUNDS = np.array([
 (0.1, 1.0),                         # taper ratio
@@ -30,12 +30,12 @@ BOUNDS = np.array([
 # %%
 # Sample design space (LHS)
 BOUNDS_ARRAY = np.array(BOUNDS)
-samples_norm = qmc.LatinHypercube(len(BOUNDS_ARRAY)).random(200)
+samples_norm = qmc.LatinHypercube(len(BOUNDS_ARRAY)).random(500)
 samples_scaled = samples_norm * (BOUNDS_ARRAY[:, 1] - BOUNDS_ARRAY[:, 0]) + BOUNDS_ARRAY[:, 0]
 
 ##############################################################################################################
-# Run LHS sample collection
 # %%
+# Run LHS sample collection
 # Evaluate aerodynamic efficiency
 n_samples = samples_scaled.shape[0]
 aero_eff = np.zeros(n_samples)
@@ -70,8 +70,8 @@ for i, sample in enumerate(samples_scaled):
 
 #######################################################################################################
 # %%
-
 # Train GPR on Aero Efficiency
+
 n_features = samples_norm.shape[1]
 kernel = C(1.0, (1e-3, 1e3)) * RBF(
     length_scale=np.ones(n_features),
@@ -115,10 +115,17 @@ for name, scale in zip(param_names, length_scales_Cma):
 ###########################################################################################################
 # %%
 # Plotting Aero Efficiency Results
-
 export_toggle = False
 # GPR surface projection
-param_idx = (0, 2)  # zero-based indices
+# 0: taper_ratio
+# 1: aspect_ratio
+# 2: sweep
+# 3: root_twist
+# 4: tip_twist
+# 5: A
+# 6: c
+# 7: delta
+param_idx = (3, 4)  # zero-based indices
 grid_res = 50
 
 # actual ranges for selected parameters
@@ -145,12 +152,12 @@ fig1.colorbar(surf, ax=ax, shrink=0.7, pad=0.13)
 
 # Training data points (actual parameter values)
 ax.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]], aero_eff,
-           c="k", s=15, depthshade=True)
+           c="k", s=10, depthshade=True)
 
 param_labels = {i: name for i, name in enumerate(param_names)}
 ax.set_xlabel(param_labels[param_idx[0]])
 ax.set_ylabel(param_labels[param_idx[1]])
-ax.set_zlabel("Aero Efficiency (C_D / C_L)")
+ax.set_zlabel("Aero Efficiency (C_L / C_D)")
 
 ax.view_init(elev=30, azim=-45)
 
@@ -172,7 +179,7 @@ fig2, ax2 = plt.subplots(figsize=(6, 4.5), facecolor="white")
 levels = 30
 cf = ax2.contourf(X_grid, Y_grid, Z_grid, levels=levels, cmap="jet")
 cs = ax2.contour(X_grid, Y_grid, Z_grid, levels=levels, colors="k", linewidths=0.3, alpha=0.4)
-fig2.colorbar(cf, ax=ax2, shrink=0.8, pad=0.02, label='Aero Efficiency (C_D / C_L)')
+fig2.colorbar(cf, ax=ax2, shrink=0.8, pad=0.02, label='Aero Efficiency (C_L / C_D)')
 
 # Training data points (actual parameter values)
 ax2.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]],
@@ -203,7 +210,15 @@ plt.show()
 
 export_toggle = False
 # GPR surface projection
-param_idx = (2, 7)  # zero-based indices
+# 0: taper_ratio
+# 1: aspect_ratio
+# 2: sweep
+# 3: root_twist
+# 4: tip_twist
+# 5: A
+# 6: c
+# 7: delta
+param_idx = (2, 5)  # zero-based indices
 grid_res = 50
 
 # actual ranges for selected parameters
@@ -230,7 +245,7 @@ fig1.colorbar(surf, ax=ax, shrink=0.5, pad=0.13)
 
 # Training data points (actual parameter values)
 ax.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]], aero_eff,
-           c="k", s=15, depthshade=True)
+           c="k", s=10, depthshade=True)
 
 param_labels = {i: name for i, name in enumerate(param_names)}
 ax.set_xlabel(param_labels[param_idx[0]])
