@@ -90,7 +90,7 @@ length_scales = gpr_aero.kernel_.k2.length_scale
 
 param_names = ["taper_ratio", "aspect_ratio", "sweep", "root_twist", "tip_twist", "A", "c", "delta"]
 print('-' * 40)
-print("Length scales:")
+print("Length scales (Aero Efficiency):")
 for name, scale in zip(param_names, length_scales):
     print(f"  {name}: {scale:.6f}")
 
@@ -236,7 +236,7 @@ export_toggle = False
 # 5: A
 # 6: c
 # 7: delta
-param_idx = (3, 5)  # zero-based indices
+param_idx = (2, 6)  # zero-based indices
 grid_res = 50
 
 # actual ranges for selected parameters
@@ -262,7 +262,7 @@ surf = ax.plot_surface(X_grid, Y_grid, Z_grid, cmap="jet", edgecolor="none", alp
 fig1.colorbar(surf, ax=ax, shrink=0.5, pad=0.13)
 
 # Training data points (actual parameter values)
-ax.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]], aero_eff,
+ax.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]], Cma,
            c="k", s=10, depthshade=True)
 
 param_labels = {i: name for i, name in enumerate(param_names)}
@@ -329,7 +329,7 @@ export_toggle = False
 # 5: A
 # 6: c
 # 7: delta
-param_idx = (3, 5)  # zero-based indices
+param_idx = (2, 1)  # zero-based indices
 grid_res = 50
 
 # actual ranges for selected parameters
@@ -355,7 +355,7 @@ surf = ax.plot_surface(X_grid, Y_grid, Z_grid, cmap="jet", edgecolor="none", alp
 fig1.colorbar(surf, ax=ax, shrink=0.5, pad=0.13)
 
 # Training data points (actual parameter values)
-ax.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]], aero_eff,
+ax.scatter(samples_scaled[:, param_idx[0]], samples_scaled[:, param_idx[1]], Clb,
            c="k", s=10, depthshade=True)
 
 param_labels = {i: name for i, name in enumerate(param_names)}
