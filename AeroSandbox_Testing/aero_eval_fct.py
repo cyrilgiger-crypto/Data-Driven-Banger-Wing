@@ -1,5 +1,3 @@
-from tabnanny import verbose
-
 import aerosandbox as asb
 import aerosandbox.numpy as np
 import matplotlib.pyplot as plt
