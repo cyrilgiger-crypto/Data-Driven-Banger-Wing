@@ -1,9 +1,17 @@
+from tabnanny import verbose
+
 import aerosandbox as asb
 import aerosandbox.numpy as np
 import matplotlib.pyplot as plt
 
 
-def main(span=0.8, root_chord=0.2, tip_chord=0.1, sweep=20, root_twist=5*np.pi/180, tip_twist=-1*np.pi/180, A=0.5, c=0.9, delta=np.deg2rad(2), enable_plot = True):
+def main(span=0.8, 
+         root_chord=0.2, tip_chord=0.1, 
+         sweep=20, 
+         root_twist=5*np.pi/180, tip_twist=-1*np.pi/180, 
+         A=0.5, c=0.9, delta=np.deg2rad(2), 
+         enable_plot = True, verbose=True):
+    
     plt.show(block=False)
     plt.pause(0.1)
 
@@ -139,14 +147,15 @@ def main(span=0.8, root_chord=0.2, tip_chord=0.1, sweep=20, root_twist=5*np.pi/1
     # print("CD:", scalar(results["CD"]))
     # print("Lift:", scalar(results["L"]))
     # print("Drag:", scalar(results["D"]))
-    print("-" * 30)
-    print("Aero Efficiency:", f"{scalar(aero_efficiency):.4g}")
-    print("dCm/da:", f"{scalar(results['Cma']):.4g}", " < 0")
-    print("dCl/db:", f"{scalar(results['Clb']):.4g}", " < 0")
-    print("dCn/db:", f"{scalar(results['Cnb']):.4g}", " > 0")
-    print("x_np:", f"{scalar(results['x_np'])*100:.4g}", "cm > x_CG: ", f"{xi_CG*root_chord*100:.4g}"," cm")
-    print("-" * 30)
-    print("Cm: ", f"{scalar(results['Cm']):.4g}", " < 0")
+    if verbose:
+        print("-" * 30)
+        print("Aero Efficiency:", f"{scalar(aero_efficiency):.4g}")
+        print("dCm/da:", f"{scalar(results['Cma']):.4g}", " < 0")
+        print("dCl/db:", f"{scalar(results['Clb']):.4g}", " < 0")
+        print("dCn/db:", f"{scalar(results['Cnb']):.4g}", " > 0")
+        print("x_np:", f"{scalar(results['x_np'])*100:.4g}", "cm > x_CG: ", f"{xi_CG*root_chord*100:.4g}"," cm")
+        print("-" * 30)
+        print("Cm: ", f"{scalar(results['Cm']):.4g}", " < 0")
 
     # -----------------------
     # Spanwise lift distribution (sum over chordwise panels)
@@ -198,6 +207,7 @@ def main(span=0.8, root_chord=0.2, tip_chord=0.1, sweep=20, root_twist=5*np.pi/1
 
     return {
         "aero_efficiency": aero_efficiency,
+        "Cm":  scalar(results["Cm"]),
         "Cma": scalar(results["Cma"]),
         "Clb": scalar(results["Clb"]),
         "Cnb": scalar(results["Cnb"])
