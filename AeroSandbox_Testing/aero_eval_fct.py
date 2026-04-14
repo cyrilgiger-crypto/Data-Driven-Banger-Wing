@@ -153,7 +153,7 @@ def main(span=0.8,
         print("dCn/db:", f"{scalar(results['Cnb']):.4g}", " > 0")
         print("x_np:", f"{scalar(results['x_np'])*100:.4g}", "cm > x_CG: ", f"{xi_CG*root_chord*100:.4g}"," cm")
         print("-" * 30)
-        print("Cm: ", f"{scalar(results['Cm']):.4g}", " < 0")
+        print("Cm: ", f"{scalar(results['Cm']):.4g}", " = 0")
 
     # -----------------------
     # Spanwise lift distribution (sum over chordwise panels)
