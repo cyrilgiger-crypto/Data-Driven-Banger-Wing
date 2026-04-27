@@ -329,7 +329,7 @@ export_toggle = False
 # 5: A
 # 6: c
 # 7: delta
-param_idx = (2, 1)  # zero-based indices
+param_idx = (4, 2)  # zero-based indices
 grid_res = 50
 
 # actual ranges for selected parameters

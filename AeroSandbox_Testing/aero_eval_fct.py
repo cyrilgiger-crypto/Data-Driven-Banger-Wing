@@ -213,17 +213,26 @@ def main(span=0.8,
 
 
 if __name__ == "__main__":
-    
-    taper_ratio = 0.200000 
-    aspect_ratio = 12.084744
-    sweep       = 0.320989 
-    root_twist  = 0.099388 
-    tip_twist   = -0.015257 
-    A           = 1.000000
-    c           = 0.300000
-    delta       = 0.011943
+    taper_ratio = 0.874264
+    aspect_ratio = 6.299697
+    sweep = 0.064601
+    root_twist = -0.762029
+    tip_twist = 0.575939
+    A = 0.769099
+    c = 0.303751
+    delta = -0.013927
 
-    root_chord = 2*0.8 / (aspect_ratio * (1 + taper_ratio))
+    root_chord = 2 * 0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
 
-    results = main(enable_plot=True, tip_chord=tip_chord, root_chord=root_chord, sweep=sweep, root_twist=root_twist, tip_twist=tip_twist, A=A, c=c, delta=delta)
+    results = main(
+        enable_plot=True,
+        tip_chord=tip_chord,
+        root_chord=root_chord,
+        sweep=sweep,
+        root_twist=root_twist,
+        tip_twist=tip_twist,
+        A=A,
+        c=c,
+        delta=delta,
+    )
