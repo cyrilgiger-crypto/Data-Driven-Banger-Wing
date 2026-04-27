@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 
 def main(span=0.8, 
          root_chord=0.2, tip_chord=0.1, 
-         sweep=20, 
-         root_twist=5*np.pi/180, tip_twist=-1*np.pi/180, 
-         A=0.5, c=0.9, delta=np.deg2rad(2), 
+         sweep=np.deg2rad(20), 
+         aoa=2, tip_twist=-1*np.pi/180, 
+         A=0.5, c=0.9, delta=np.deg2rad(5), 
+         velocity=20,
          enable_plot = True, verbose=True):
     
     plt.show(block=False)
@@ -18,6 +19,7 @@ def main(span=0.8,
     # -----------------------
     half_span = span / 2
     n_sections = 10
+    root_twist = 0.0 # default to no twist at root
 
     # Span stations
     y_stations = np.linspace(0, half_span, n_sections)
@@ -102,13 +104,14 @@ def main(span=0.8,
     # -----------------------
     # Create airplane
     # -----------------------
-    xi_CG = 0.5 # x% of root chord
+    x_CG_geom = span/6 * (root_chord + 2*tip_chord) / (root_chord + tip_chord) *np.tan(sweep)
+    x_CG = x_CG_geom * 0.8 # account for battery / electronics being heavier
     airplane = asb.Airplane(
         wings=[wing, winglet],
         s_ref=s_ref,
         b_ref=b_ref,
         c_ref=c_ref,
-        xyz_ref=[root_chord * xi_CG, 0, 0]
+        xyz_ref=[x_CG, 0, 0]
     )
 
     # -----------------------
@@ -116,8 +119,8 @@ def main(span=0.8,
     # -----------------------
     op = asb.OperatingPoint(
         atmosphere=asb.Atmosphere(altitude=0),
-        velocity=20,
-        alpha=2,
+        velocity=velocity,
+        alpha=np.rad2deg(aoa),
         beta=0
     )
 
@@ -151,7 +154,7 @@ def main(span=0.8,
         print("dCm/da:", f"{scalar(results['Cma']):.4g}", " < 0")
         print("dCl/db:", f"{scalar(results['Clb']):.4g}", " < 0")
         print("dCn/db:", f"{scalar(results['Cnb']):.4g}", " > 0")
-        print("x_np:", f"{scalar(results['x_np'])*100:.4g}", "cm > x_CG: ", f"{xi_CG*root_chord*100:.4g}"," cm")
+        print("x_np:", f"{scalar(results['x_np'])*100:.4g}", "cm > x_CG: ", f"{x_CG*100:.4g}"," cm")
         print("-" * 30)
         print("Cm: ", f"{scalar(results['Cm']):.4g}", " = 0")
 
@@ -208,19 +211,21 @@ def main(span=0.8,
         "Cm":  scalar(results["Cm"]),
         "Cma": scalar(results["Cma"]),
         "Clb": scalar(results["Clb"]),
-        "Cnb": scalar(results["Cnb"])
+        "Cnb": scalar(results["Cnb"]),
+        "L": scalar(results["L"]),
     }
 
 
 if __name__ == "__main__":
-    taper_ratio = 0.874264
-    aspect_ratio = 6.299697
-    sweep = 0.064601
-    root_twist = -0.762029
-    tip_twist = 0.575939
-    A = 0.769099
-    c = 0.303751
-    delta = -0.013927
+    
+    taper_ratio  = 0.285427
+    aspect_ratio = 10.408361
+    sweep        = -0.301050 
+    aoa          = 0.158706 
+    tip_twist    = -0.084202
+    A            = 0.662522
+    c            = 0.518198
+    delta        = 0.031523
 
     root_chord = 2 * 0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
@@ -230,7 +235,7 @@ if __name__ == "__main__":
         tip_chord=tip_chord,
         root_chord=root_chord,
         sweep=sweep,
-        root_twist=root_twist,
+        aoa=aoa,
         tip_twist=tip_twist,
         A=A,
         c=c,
