@@ -13,7 +13,7 @@ BOUNDS: List[Tuple[float, float]] = [
     (0.2, 0.9),                        # taper ratio
     (1.0, 20.0),                       # aspect ratio
     (np.deg2rad(-20), np.deg2rad(60)), # sweep [rad]
-    (np.deg2rad(0)  , np.deg2rad(10)), # angle of attack [rad]
+    (np.deg2rad(1.0), np.deg2rad(5)),  # angle of attack [rad]
     (np.deg2rad(-10), np.deg2rad(10)), # tip_twist [rad]
     (0.0, 1.0),                        # A (seagull dihedral shape)
     (0.3, 1.0),                        # c (seagull dihedral shape)
@@ -124,7 +124,7 @@ def print_best_solution(x_best: np.ndarray, y_best: float) -> None:
 def run() -> None:
 
     # Maximum objective evaluations. If omitted, runs until interrupted (Ctrl+C).
-    max_evals = None
+    max_evals = 200
     # Number of initial random evaluations before BO guidance.
     n_initial = 50
     # EI exploration parameter (mapped to xi).
