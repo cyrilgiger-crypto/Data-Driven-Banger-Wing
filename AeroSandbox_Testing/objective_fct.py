@@ -38,8 +38,8 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
 
     # Objective function weights (TBD: tune these)
     w_Cm   = 100.0
-    w_stab = 10.0
-    w_lift = 1.0
+    w_stab = 20
+    w_lift = 20
 
     # Calculate individual contributions
     # Minimize negative efficiency (i.e., maximize efficiency)
