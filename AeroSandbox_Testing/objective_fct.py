@@ -47,9 +47,9 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
 
     contrib_Cm = w_Cm * abs(Cm)**2                  # trim stability
     
-    contrib_Cma = w_stab * abs(Cma - Cma_target)**2 # static pitch stability
-    contrib_Clb = w_stab * abs(Clb - Clb_target)**2 # dutch-roll stability
-    contrib_Cnb = w_stab * abs(Cnb - Cnb_target)**2 # directional stability
+    contrib_Cma = w_stab * abs((Cma - Cma_target) / Cma_target)**2 # static pitch stability
+    contrib_Clb = w_stab * abs((Clb - Clb_target) / Clb_target)**2 # dutch-roll stability
+    contrib_Cnb = w_stab * abs((Cnb - Cnb_target) / Cnb_target)**2 # directional stability
     contrib_stability = contrib_Cma + contrib_Clb + contrib_Cnb
 
     contrib_lift = w_lift * abs(L - 9.81*weight_kg)**2 # lift penalty
