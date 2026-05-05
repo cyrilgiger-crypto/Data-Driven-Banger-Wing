@@ -218,14 +218,14 @@ def main(span=0.8,
 
 if __name__ == "__main__":
 
-    taper_ratio  = 0.415260
-    aspect_ratio = 11.495605
-    sweep        = -0.321983
-    aoa          = 0.166822 
-    tip_twist    = -0.124538 
-    A            = 0.496059
-    c            = 0.726379
-    delta        = -0.198346 
+    taper_ratio  = 0.2728
+    aspect_ratio = 14.0461
+    sweep        = 0.0718
+    aoa          = 0.2344
+    tip_twist    = -0.1954
+    A            = 0.9834
+    c            = 0.1963
+    delta        = -0.0367
 
     root_chord = 2 * 0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
