@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 
 def main(span=0.8, 
          root_chord=0.2, tip_chord=0.1, 
-         sweep=np.deg2rad(20), 
+         sweep=np.deg2rad(-45), 
          aoa=2, tip_twist=-1*np.pi/180, 
-         A=0.5, c=0.9, delta=np.deg2rad(5), 
+         A=0.5, c=0.5, delta=np.deg2rad(5), 
          velocity=20,
-         enable_plot = True, verbose=True):
+         enable_plot = False, verbose=True):
     
     plt.show(block=False)
     plt.pause(0.1)
@@ -218,14 +218,14 @@ def main(span=0.8,
 
 if __name__ == "__main__":
 
-    taper_ratio  = 0.2728
-    aspect_ratio = 14.0461
-    sweep        = 0.0718
-    aoa          = 0.2344
-    tip_twist    = -0.1954
-    A            = 0.9834
-    c            = 0.1963
-    delta        = -0.0367
+    taper_ratio  = 0.415260
+    aspect_ratio = 11.495605
+    sweep        = 0.321983
+    aoa          = 0.166822 
+    tip_twist    = -0.124538 
+    A            = 0.496059
+    c            = 0.726379
+    delta        = -0.198346 
 
     root_chord = 2 * 0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
