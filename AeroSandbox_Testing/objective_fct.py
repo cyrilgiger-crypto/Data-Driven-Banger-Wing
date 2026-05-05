@@ -73,14 +73,14 @@ if __name__ == "__main__":
 
     # test the objective function with a sample input
     input = np.array([
-        0.485563,                   # taper ratio
-        4.230328,                  # aspect ratio
-        0.453217,                   # sweep [rad]
-        0.274881,                   # root_twist [rad]
-        0.366791,                  # tip_twist [rad]
-        0.816124,                   # A (seagull dihedral shape)
-        0.526879,                   # c (seagull dihedral shape)
-        -0.032036,                   # delta [rad]
+        0.319845,      # taper_ratio
+        15.153145,     # aspect_ratio
+        0.242895,      # sweep
+        0.070833,      # aoa
+        0.162215,      # tip_twist
+        0.031704,      # A
+        0.911944,      # c
+        0.200692       # delta
     ])
 
     targets = {
