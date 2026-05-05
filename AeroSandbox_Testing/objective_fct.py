@@ -26,6 +26,7 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
         velocity=velocity,
         enable_plot=enable_plot,
         verbose=False
+        # verbose=True
     )
 
     # unpack results
@@ -37,7 +38,7 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
     L = results["L"]
 
     # Objective function weights (TBD: tune these)
-    w_Cm   = 200.0
+    w_Cm   = 100.0
     w_stab = 20
     w_lift = 20
 
@@ -58,7 +59,7 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
     obj = -aero_eff + contrib_Cm + contrib_lift + contrib_stability
     
     if verbose:
-        print(f"Aero Efficiency: {aero_eff:.4g} (contribution: -{aero_eff:.4g})")
+        print(f"Aero Efficiency: {aero_eff:.4g} (contribution: {aero_eff:.4g})")
         print(f"Cm: {Cm:.4g} (contribution: {contrib_Cm:.4g})")
         print(f"Cma: {Cma:.4g} (target: {Cma_target:.4g}, contribution: {contrib_Cma:.4g})")
         print(f"Clb: {Clb:.4g} (target: {Clb_target:.4g}, contribution: {contrib_Clb:.4g})")
