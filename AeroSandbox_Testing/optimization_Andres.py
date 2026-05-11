@@ -1,17 +1,18 @@
 import numpy as np
 from scipy.optimize import minimize
 from objective_fct import objective
+from aero_eval_fct import main as aero_eval
 
 STABILITY_TARGETS = {"Cma": -0.2, "Clb": -0.1, "Cnb": 0.02}
 
-BOUNDS_7 = [
+BOUNDS_7 = [ 
     (0.2, 0.9),                        # taper_ratio
-    (5.0, 15.0),                       # aspect_ratio
-    (np.deg2rad(-45), np.deg2rad(60)), # sweep
-    (np.deg2rad(-5), np.deg2rad(10)),  # aoa
-    (np.deg2rad(-10), np.deg2rad(8)),  # tip_twist
+    (1.0, 20.0),                       # aspect_ratio
+    (np.deg2rad(15), np.deg2rad(35)), # sweep
+    (np.deg2rad(1.0), np.deg2rad(5)),  # aoa
+    (np.deg2rad(-10), np.deg2rad(10)),  # tip_twist
     (0.0, 1.0),                        # A
-    (np.deg2rad(0.0), np.deg2rad(5.0)),# delta
+    (np.deg2rad(-45), np.deg2rad(45)),# delta
 ]
 
 def objective_wrapper(x_reduced, *args):
@@ -42,16 +43,24 @@ def iteration_callback(xk):
 if __name__ == "__main__":
     
     x0 = np.array([
-        0.55,       # taper_ratio
+        0.8,       # taper_ratio
         10.0,       # aspect_ratio
-        0.0,        # sweep (0 rad)
+        0.5,        # sweep (0 rad)
         0.05,       # aoa (~3 deg)
-        -0.05,      # tip_twist (~-3 deg)
-        0.5,        # A
+        0.05,      # tip_twist (~-3 deg)
+        0.7,        # A
         0.0         # delta
     ])
 
-    MAX_ITERATIONS = 50
+    MAX_ITERATIONS = 100
+
+    options={
+        'maxiter': MAX_ITERATIONS,
+        'disp': True,
+        'ftol': 1e-9,
+        'eps': 1.4901161193847656e-08 # Default value
+    }
+
 
     print("Beginning of optimization...")
     
@@ -63,19 +72,22 @@ if __name__ == "__main__":
         method='SLSQP',
         bounds=BOUNDS_7,
         callback=iteration_callback,
-        options={'maxiter': MAX_ITERATIONS, 'disp': True}
+        options=options
     )
 
     x_final_full = np.array([
-        result.x[0],
-        result.x[1],
-        result.x[2],
-        result.x[3], 
-        result.x[4],
-        result.x[5],
-        0.5,
-        result.x[6]
+        result.x[0],    # taper ratio
+        result.x[1],    # aspect ratio
+        result.x[2],    # sweep
+        result.x[3],    # aoa
+        result.x[4],    # tip twist
+        result.x[5],    # A
+        0.5,            # c
+        result.x[6]     # delta
     ])
+
+    root_chord = 2*0.8 / (result.x[1] * (1 + result.x[0]))
+    tip_chord = root_chord * result.x[0]
 
     labels = ["taper ratio:", "aspect ratio:", "sweep:", "aoa:", "tip twist:", "A:", "c:", "delta:"]
 
@@ -90,3 +102,16 @@ if __name__ == "__main__":
         print(f"{label:<15} {np.round(value, 4)}")
     print("\nFinal performance :")
     objective_wrapper(result.x, STABILITY_TARGETS, True, 1.0, 20, True)
+    aero_eval(
+        tip_chord=tip_chord,
+        root_chord=root_chord,
+        sweep=result.x[2],
+        aoa=result.x[3],
+        tip_twist=result.x[4],
+        A=result.x[5],
+        c=0.5,
+        delta=result.x[6],
+        velocity=20,
+        enable_plot=False,
+        verbose=True
+    )
