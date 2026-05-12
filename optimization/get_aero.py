@@ -119,3 +119,32 @@ def get_aero(
         "Cnb": _scalar(results["Cnb"]),
         "L": _scalar(results["L"]),
     }
+
+if __name__ == "__main__":
+    span = 0.8
+    root_chord = 0.2
+    tip_chord = 0.1
+    sweep = np.deg2rad(-45)
+    aoa = np.deg2rad(2)
+    tip_twist = np.deg2rad(-1)
+    A = 0.5
+    c = 0.5
+    delta = np.deg2rad(5)
+    velocity = 20
+    enable_plot = True
+    verbose = True
+
+    get_aero(
+        span=span,
+        root_chord=root_chord,
+        tip_chord=tip_chord,
+        sweep=sweep,
+        aoa=aoa,
+        tip_twist=tip_twist,
+        A=A,
+        c=c,
+        delta=delta,
+        velocity=velocity,
+        enable_plot=enable_plot,
+        verbose=verbose,
+    )
