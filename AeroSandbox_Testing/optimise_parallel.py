@@ -17,8 +17,8 @@ bounds = [
     (0.0, 0.08),    # aoa [rad]
     (-0.4, 0.2),    # tip_twist [rad]
     (0.0, 1.0),     # A
-    (0.0, 1),     # c
-    (0.139, 0.140),     # delta [rad]
+    # (0.0, 1),       # c
+    # (0.139, 0.140), # delta [rad]
 ]
 
 def fitness_wrapper(x):
