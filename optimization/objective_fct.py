@@ -49,24 +49,18 @@ def objective(
             print("Trim AoA solver failed to converge.")
             print(f"Returning penalty: {HUGE_PENALTY}")
             print("------------------------------------------------")
-        #return HUGE_PENALTY
+        return HUGE_PENALTY
 
     aoa = float(trim["aoa"])
     aoa_deg = np.rad2deg(aoa)
 
     # 2. NEW: Check if AoA is within the [-7, 7] degree range
-    #if aoa_deg < 0.0 or aoa_deg > 5.0:
-    #    if verbose:
-    #        print(f"Trim AoA out of range: {aoa_deg:.4g}° (Allowed: -7° to 7°)")
-    #        print(f"Returning penalty: {HUGE_PENALTY}")
-    #        print("------------------------------------------------")
-    #    return HUGE_PENALTY
-    
-    penalty_aoa = 0.0
-    if aoa_deg < 0.0:
-        penalty_aoa = 500.0 * (0.0 - aoa_deg)**2
-    elif aoa_deg > 5.0:
-        penalty_aoa = 500.0 * (aoa_deg - 5.0)**2
+    if aoa_deg < 0.0 or aoa_deg > 5.0:
+        if verbose:
+            print(f"Trim AoA out of range: {aoa_deg:.4g}° (Allowed: 0° to 5°)")
+            print(f"Returning penalty: {HUGE_PENALTY}")
+            print("------------------------------------------------")
+        return HUGE_PENALTY
 
     # ------------------------------------------------------------------
     # Aero evaluation
@@ -113,7 +107,6 @@ def objective(
         -aero_eff
         + contrib_lift
         + contrib_stability
-        + penalty_aoa
     )
 
     if verbose:
@@ -131,7 +124,6 @@ def objective(
         print(f"Clb: {Clb:.4g} (target: {Clb_target:.4g}, contribution: {contrib_Clb:.4g})")
         print(f"Cnb: {Cnb:.4g} (target: {Cnb_target:.4g}, contribution: {contrib_Cnb:.4g})")
         print(f"Lift: {L:.4g} N (target: {9.81*weight_kg:.4g} N, contribution: {contrib_lift:.4g})")
-        print(f"aoa : {aoa_deg:.4g} (contribution: {penalty_aoa:.4g})")
         print(f"Objective Value: {obj:.4g}")
         print("------------------------------------------------")
 

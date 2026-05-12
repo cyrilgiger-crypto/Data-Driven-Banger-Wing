@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize
-from objective_fct import objective
+from minimize_objective import objective
 from get_aero import get_aero
 
 STABILITY_TARGETS = {"Cma": -0.2, "Clb": -0.1, "Cnb": 0.02}
