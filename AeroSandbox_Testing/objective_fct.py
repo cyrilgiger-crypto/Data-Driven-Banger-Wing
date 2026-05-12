@@ -38,7 +38,7 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
     L = results["L"]
 
     # Objective function weights (TBD: tune these)
-    w_Cm   = 100.0
+    w_Cm   = 500.0
     w_stab = 20
     w_lift = 20
 
