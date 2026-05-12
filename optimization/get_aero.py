@@ -130,8 +130,6 @@ if __name__ == "__main__":
     aoa = 0.0446
     tip_twist = 0.0349
     A = 0.5
-    c = 0.5
-    delta = np.deg2rad(5)
     velocity = 20
     enable_plot = True
     verbose = True
@@ -144,8 +142,6 @@ if __name__ == "__main__":
         aoa=aoa,
         tip_twist=tip_twist,
         A=A,
-        c=c,
-        delta=delta,
         velocity=velocity,
         enable_plot=enable_plot,
         verbose=verbose,
