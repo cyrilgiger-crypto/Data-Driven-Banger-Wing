@@ -27,7 +27,7 @@ def fitness_wrapper(x):
         return objective(
             x, 
             stability_targets=stability_targets, 
-            verbose=True, 
+            verbose=False, 
             enable_plot=False
         )
     except Exception:
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         fitness_wrapper, 
         bounds, 
         strategy='rand1bin', # Better for escaping stagnation than 'best1bin' 'rand1bin'
-        maxiter=200, 
+        maxiter=50, 
         popsize=20, 
         mutation=(0.7, 1.9), 
         recombination=0.4, 
@@ -63,4 +63,4 @@ if __name__ == "__main__":
 
     # Final evaluation without triggering interactive plot windows
     print("\nFinal Performance Metrics:")
-    objective(opt_x, stability_targets, verbose=True, enable_plot=False)
+    objective(opt_x, stability_targets, verbose=False, enable_plot=False)
