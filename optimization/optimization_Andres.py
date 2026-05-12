@@ -100,7 +100,7 @@ if __name__ == "__main__":
     print("\nFinal performance :")
     objective_wrapper(result.x, STABILITY_TARGETS, True, 1.0, 20, True)
     #get_aero(
-    #    tip_chord=tip_chord, 1
+    #    tip_chord=tip_chord,
     #    root_chord=root_chord,
     #    sweep=result.x[2],
     #    aoa=result.x[3],
