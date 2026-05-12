@@ -119,8 +119,6 @@ def get_aero(
         "Cnb": _scalar(results["Cnb"]),
         "L": _scalar(results["L"]),
     }
-<<<<<<< HEAD
-=======
 
 if __name__ == "__main__":
     span = 0.8
@@ -146,4 +144,3 @@ if __name__ == "__main__":
         enable_plot=enable_plot,
         verbose=verbose,
     )
->>>>>>> c94fde1184ee1c77df08cf86c78275a21a316e19
