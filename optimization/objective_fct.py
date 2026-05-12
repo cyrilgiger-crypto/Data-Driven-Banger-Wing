@@ -57,7 +57,7 @@ def objective(
     # 2. NEW: Check if AoA is within the [-7, 7] degree range
     if aoa_deg < 0.0 or aoa_deg > 5.0:
         if verbose:
-            print(f"Trim AoA out of range: {aoa_deg:.4g}° (Allowed: -7° to 7°)")
+            print(f"Trim AoA out of range: {aoa_deg:.4g}° (Allowed: 0° to 5°)")
             print(f"Returning penalty: {HUGE_PENALTY}")
             print("------------------------------------------------")
         return HUGE_PENALTY
@@ -86,7 +86,7 @@ def objective(
     L   = results["L"]
 
     # Objective function weights
-    w_Cm   = 500.0
+    w_Cm   = 0
     w_stab = 20
     w_lift = 20
 

@@ -63,4 +63,4 @@ if __name__ == "__main__":
 
     # Final evaluation without triggering interactive plot windows
     print("\nFinal Performance Metrics:")
-    objective(opt_x, stability_targets, verbose=False, enable_plot=False)
+    objective(opt_x, stability_targets, verbose=True, enable_plot=False)
