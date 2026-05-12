@@ -41,21 +41,22 @@ def iteration_callback(xk):
 if __name__ == "__main__":
     
     x0 = np.array([
-        0.8,       # taper_ratio
-        10.0,       # aspect_ratio
-        0.5,        # sweep (0 rad)
+        0.6,       # taper_ratio
+        10.2,       # aspect_ratio
+        0.4,        # sweep (0 rad)
         #0.05,       # aoa (~3 deg)
-        0.05,      # tip_twist (~-3 deg)
+        0.03,      # tip_twist (~-3 deg)
         0.7,        # A
     ])
 
     MAX_ITERATIONS = 100
+    best_value = 1e6
 
     options={
         'maxiter': MAX_ITERATIONS,
         'disp': True,
         'ftol': 1e-4,
-        'eps': 1.4e-04 # Default value
+        'eps': 1.4e-4 # Default value
     }
 
 
@@ -98,17 +99,7 @@ if __name__ == "__main__":
     for label, value in zip(labels, x_final_full):
         print(f"{label:<15} {np.round(value, 4)}")
     print("\nFinal performance :")
-    objective_wrapper(result.x, STABILITY_TARGETS, True, 1.0, 20, True)
-    #get_aero(
-    #    tip_chord=tip_chord,
-    #    root_chord=root_chord,
-    #    sweep=result.x[2],
-    #    aoa=result.x[3],
-    #    tip_twist=result.x[3],
-    #    A=result.x[4],
-    #    c=0.5,
-    #    delta=5.0,
-    #    velocity=20,
-    #    enable_plot=False,
-    #    verbose=True
-    #)
+    value = objective_wrapper(result.x, STABILITY_TARGETS, True, 1.0, 20, True)
+    if(value < best_value):
+        best_value = value
+    print(f"Best value for now: {best_value:.4g}")
