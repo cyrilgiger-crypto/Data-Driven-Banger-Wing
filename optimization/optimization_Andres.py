@@ -49,7 +49,7 @@ if __name__ == "__main__":
         0.7,        # A
     ])
 
-    MAX_ITERATIONS = 100
+    MAX_ITERATIONS = 2
     best_value = 1e6
 
     options={
