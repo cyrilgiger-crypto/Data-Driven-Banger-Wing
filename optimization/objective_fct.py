@@ -87,15 +87,17 @@ def objective(
 
     # Objective function weights
     w_Cm   = 0
-    w_stab = 20
-    w_lift = 20
+    w_Cma = 300 
+    w_Clb = 200
+    w_Cnb = 200
+    w_lift = 150
 
     # contributions
     contrib_Cm = w_Cm * abs(Cm)**2
 
-    contrib_Cma = w_stab * abs((Cma - Cma_target) / Cma_target)**2
-    contrib_Clb = w_stab * abs((Clb - Clb_target) / Clb_target)**2
-    contrib_Cnb = w_stab * abs((Cnb - Cnb_target) / Cnb_target)**2
+    contrib_Cma = w_Cma * abs((Cma - Cma_target) / Cma_target)**2
+    contrib_Clb = w_Clb * abs((Clb - Clb_target) / Clb_target)**2
+    contrib_Cnb = w_Cnb * abs((Cnb - Cnb_target) / Cnb_target)**2
 
     contrib_stability = (
         contrib_Cma +

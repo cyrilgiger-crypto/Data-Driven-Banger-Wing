@@ -122,14 +122,14 @@ def get_aero(
 
 if __name__ == "__main__":
     span = 0.8
-    aspect_ratio = 10.2171
-    taper_ratio = 0.6429
+    taper_ratio = 0.8751
+    aspect_ratio = 12.5680
     root_chord = 2 * 0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
-    sweep = 0.3994
-    aoa = 0.0446
-    tip_twist = 0.0349
-    A = 0.5
+    sweep = 0.3972
+    aoa = 0.08
+    tip_twist = -0.0073
+    A = 0.5460
     velocity = 20
     enable_plot = True
     verbose = True
