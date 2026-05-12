@@ -14,7 +14,7 @@ bounds = [
     (0.1, 1.0),     # taper_ratio
     (4.0, 15.0),    # aspect_ratio
     (-0.5, 0.5),    # sweep [rad]
-    (0.0, 0.08),    # aoa [rad]
+    # (0.0, 0.08),  # aoa [rad]
     (-0.4, 0.2),    # tip_twist [rad]
     (0.0, 1.0),     # A
     # (0.0, 1),       # c
@@ -27,7 +27,7 @@ def fitness_wrapper(x):
         return objective(
             x, 
             stability_targets=stability_targets, 
-            verbose=False, 
+            verbose=True, 
             enable_plot=False
         )
     except Exception:

@@ -1,10 +1,11 @@
 import numpy as np
-from aero_eval_fct import main as aero_eval
+from get_aero import get_aero
+from aoa_solver import solve_trim_aoa_from_geometry
 
 def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, weight_kg: float = 1, velocity: float = 20, enable_plot: bool = False) -> float:
    
     # unpack design variables
-    taper_ratio, aspect_ratio, sweep, aoa, tip_twist, A = x
+    taper_ratio, aspect_ratio, sweep, tip_twist, A = x
     Cma_target = stability_targets["Cma"]
     Clb_target = stability_targets["Clb"]
     Cnb_target = stability_targets["Cnb"]
@@ -13,8 +14,20 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
     root_chord = 2*0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
 
+    # Solve for trim AoA first, then evaluate aero at that AoA.
+    trim = solve_trim_aoa_from_geometry(
+        root_chord=root_chord,
+        tip_chord=tip_chord,
+        sweep=sweep,
+        tip_twist=tip_twist,
+        A=A,
+        velocity=velocity,
+        target_cm=0.0,
+    )
+    aoa = float(trim["aoa"])
+
     # call aero evaluation function
-    results = aero_eval(
+    results = get_aero(
         tip_chord=tip_chord,
         root_chord=root_chord,
         sweep=sweep,
@@ -59,6 +72,8 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
     obj = -aero_eff + contrib_Cm + contrib_lift + contrib_stability
     
     if verbose:
+        print(f"Solved AoA: {aoa:.4g} rad ({np.rad2deg(aoa):.4g} deg), converged={trim['converged']}, "
+              f"iterations={trim['iterations']}, evals={trim['evaluations']}")
         print(f"Aero Efficiency: {aero_eff:.4g} (contribution: {aero_eff:.4g})")
         print(f"Cm: {Cm:.4g} (contribution: {contrib_Cm:.4g})")
         print(f"Cma: {Cma:.4g} (target: {Cma_target:.4g}, contribution: {contrib_Cma:.4g})")
@@ -77,11 +92,8 @@ if __name__ == "__main__":
         0.319845,      # taper_ratio
         15.153145,     # aspect_ratio
         0.242895,      # sweep
-        0.070833,      # aoa
         0.162215,      # tip_twist
-        0.031704,      # A
-        0.911944,      # c
-        0.200692       # delta
+        0.031704       # A
     ])
 
     targets = {
