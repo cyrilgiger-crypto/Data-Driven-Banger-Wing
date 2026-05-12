@@ -4,7 +4,7 @@ from aero_eval_fct import main as aero_eval
 def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, weight_kg: float = 1, velocity: float = 20, enable_plot: bool = False) -> float:
    
     # unpack design variables
-    taper_ratio, aspect_ratio, sweep, aoa, tip_twist, A, c, delta = x
+    taper_ratio, aspect_ratio, sweep, aoa, tip_twist, A = x
     Cma_target = stability_targets["Cma"]
     Clb_target = stability_targets["Clb"]
     Cnb_target = stability_targets["Cnb"]
@@ -21,8 +21,8 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
         aoa=aoa,
         tip_twist=tip_twist,
         A=A,
-        c=c,
-        delta=delta,
+        # c=c,
+        # delta=delta,
         velocity=velocity,
         enable_plot=enable_plot,
         verbose=False
@@ -38,7 +38,7 @@ def objective(x: np.ndarray, stability_targets: dict, verbose: bool = False, wei
     L = results["L"]
 
     # Objective function weights (TBD: tune these)
-    w_Cm   = 100.0
+    w_Cm   = 500.0
     w_stab = 20
     w_lift = 20
 

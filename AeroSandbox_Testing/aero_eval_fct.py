@@ -104,7 +104,7 @@ def main(span=0.8,
     # -----------------------
     # Create airplane
     # -----------------------
-    sweep_05 = np.arctan(np.tan(sweep) - 2 / (aspect_ratio) * (1 - taper_ratio) / (1 + taper_ratio))
+    sweep_05 = np.arctan(np.tan(sweep) - (root_chord-tip_chord)/span)
     x_CG_geom = span/6 * (root_chord + 2*tip_chord) / (root_chord + tip_chord) *np.tan(sweep_05)
     x_CG = x_CG_geom * 0.8 + 0.5*root_chord # account for battery / electronics being heavier
     airplane = asb.Airplane(
