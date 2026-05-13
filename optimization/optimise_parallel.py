@@ -13,7 +13,7 @@ from get_aero import get_aero
 # ============================================================
 
 SPAN = 0.8
-VELOCITY = 20
+#VELOCITY = 20
 WEIGHT_KG = 1.0
 
 # Stability targets
@@ -83,7 +83,7 @@ def evaluate_design(x, verbose=False, enable_plot=False):
         sweep=geom["sweep"],
         tip_twist=geom["tip_twist"],
         A=geom["A"],
-        velocity=VELOCITY,
+        #velocity=VELOCITY,
         target_cm=0.0,
     )
 
@@ -116,7 +116,7 @@ def evaluate_design(x, verbose=False, enable_plot=False):
         aoa=aoa,
         tip_twist=geom["tip_twist"],
         A=geom["A"],
-        velocity=VELOCITY,
+        #velocity=VELOCITY,
         enable_plot=enable_plot,
         verbose=False,
     )
@@ -175,7 +175,7 @@ def fitness_wrapper(x):
             stability_targets=stability_targets,
             verbose=False,
             weight_kg=WEIGHT_KG,
-            velocity=VELOCITY,
+            #velocity=VELOCITY,
             enable_plot=False,
         )
 
@@ -204,8 +204,8 @@ if __name__ == "__main__":
 
         # Evolution settings
         strategy="rand1bin",
-        maxiter=100,
-        popsize=20,
+        maxiter=3,
+        popsize=5,
 
         mutation=(0.7, 1.9),
         recombination=0.4,

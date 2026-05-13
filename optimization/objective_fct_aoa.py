@@ -2,9 +2,6 @@ import numpy as np
 from get_aero import get_aero
 from aoa_solver import solve_trim_aoa_from_geometry
 from velocity_solver import solve_velocity_from_geometry
-from joint_solver import solve_aoa_and_velocity
-from build_wing import build_wing
-
 
 def objective(
     x: np.ndarray,
@@ -27,27 +24,44 @@ def objective(
     tip_chord = root_chord * taper_ratio
 
     # ------------------------------------------------------------------
-    # Solve Trim AoA and Velocity simultaneously
+    # Solve trim AoA
     # ------------------------------------------------------------------
-
-    # 1. Build the wing once
-    airplane = build_wing(
-        span=0.8, root_chord=root_chord, tip_chord=tip_chord,
-        sweep=sweep, tip_twist=tip_twist, A=A
+    trim = solve_trim_aoa_from_geometry(
+        root_chord=root_chord,
+        tip_chord=tip_chord,
+        sweep=sweep,
+        tip_twist=tip_twist,
+        A=A,
+        velocity=velocity,
+        target_cm=0.0,
     )
 
-    # 2. Use the joint solver
-    sol = solve_aoa_and_velocity(
-        airplane=airplane,
-        target_lift=9.81 * weight_kg, # Or 8.0 as per your requirement
-        target_cm=0.0
-    )
+    # Huge penalty if trim solution fails
+    HUGE_PENALTY = 1e6
 
-    if not sol["converged"]:
-        return 1e6 # Return HUGE_PENALTY
+    # Check AoA solver
+    if (
+        trim is None
+        or not trim.get("converged", False)
+        or "aoa" not in trim
+        or not np.isfinite(trim["aoa"])
+    ):
+        if verbose:
+            print("Trim AoA solver failed to converge.")
+            print(f"Returning penalty: {HUGE_PENALTY}")
+            print("------------------------------------------------")
+        return HUGE_PENALTY
 
-    aoa = sol["aoa"]
-    velocity = sol["velocity"]
+    aoa = float(trim["aoa"])
+    aoa_deg = np.rad2deg(aoa)
+
+    # AoA bounds
+    if aoa_deg < 0.0 or aoa_deg > 5.0:
+        if verbose:
+            print(f"Trim AoA out of range: {aoa_deg:.4g}° (Allowed: 0° to 5°)")
+            print(f"Returning penalty: {HUGE_PENALTY}")
+            print("------------------------------------------------")
+        return HUGE_PENALTY
 
     # ------------------------------------------------------------------
     # Aero evaluation
@@ -77,7 +91,7 @@ def objective(
     w_Cma = 300 
     w_Clb = 200
     w_Cnb = 200
-    w_lift = 200
+    w_lift = 150
 
     # contributions
     contrib_Cm = w_Cm * abs(Cm)**2

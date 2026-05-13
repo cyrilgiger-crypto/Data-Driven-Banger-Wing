@@ -133,7 +133,7 @@ if __name__ == "__main__":
     aoa = 0.0436
     tip_twist = -0.0318
     A = 0.3701
-    velocity = 25
+    velocity = 40
     enable_plot = True
     verbose = True
 
