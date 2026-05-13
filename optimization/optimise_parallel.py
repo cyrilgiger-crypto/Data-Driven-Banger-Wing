@@ -52,7 +52,6 @@ def unpack_design(x):
 
     tip_chord = root_chord * taper_ratio
 
-<<<<<<< HEAD
     return {
         "taper_ratio": taper_ratio,
         "aspect_ratio": aspect_ratio,
@@ -262,8 +261,3 @@ if __name__ == "__main__":
     print(f"])")
 
     print("=" * 60)
-=======
-    # Final evaluation without triggering interactive plot windows
-    print("\nFinal Performance Metrics:")
-    objective(opt_x, stability_targets, verbose=True, enable_plot=False)
->>>>>>> 12aa553477b0425191cf4137fe1a8b1d13a2452b
