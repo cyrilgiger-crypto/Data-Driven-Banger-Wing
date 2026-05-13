@@ -88,7 +88,7 @@ def fitness_wrapper(x):
 if __name__ == "__main__":
     
     # Settings for BO
-    N_ITERATIONS = 10      # Number of batches
+    N_ITERATIONS = 1      # Number of batches
     BATCH_SIZE = 4         # Number of parallel workers/evaluations per batch
     N_INITIAL_POINTS = 10  # Random points to seed the GP model
 
@@ -121,23 +121,88 @@ if __name__ == "__main__":
 
         print(f"Iteration {i+1}/{N_ITERATIONS} | Best so far: {result.fun:.6f}")
 
-    # ========================================================
-    # FINAL RESULTS
-    # ========================================================
+# ========================================================
+# FINAL RESULTS
+# ========================================================
 
-    print("\n" + "=" * 60)
-    print("OPTIMISATION COMPLETE")
-    print("=" * 60)
+import pandas as pd
 
-    # result.x is the best point found
-    best_x = result.x
-    best_fun = result.fun
+print("\n" + "=" * 60)
+print("OPTIMISATION COMPLETE")
+print("=" * 60)
 
-    print(f"Objective Value : {best_fun:.6f}")
+# result.x is the best point found
+best_x = result.x
+best_fun = result.fun
 
-    # Re-evaluate the best design
-    geom, trim, aero = evaluate_design(best_x, verbose=True)
+print(f"\nObjective Value : {best_fun:.6f}")
 
-    print("\nOPTIMUM DESIGN VECTOR")
-    print(f"x = np.array({[round(val, 6) for val in best_x]})")
-    print("=" * 60)
+# Re-evaluate the best design
+geom, trim, aero = evaluate_design(best_x, verbose=False)
+
+# --------------------------------------------------------
+# Extract velocity
+# --------------------------------------------------------
+
+velocity = None
+
+# Try trim dictionary first
+if "velocity" in trim:
+    velocity = trim["velocity"]
+
+# Fallbacks if stored under another name
+elif "V" in trim:
+    velocity = trim["V"]
+
+elif "velocity" in aero:
+    velocity = aero["velocity"]
+
+# --------------------------------------------------------
+# Create summary table
+# --------------------------------------------------------
+
+summary_data = {
+    "Parameter": [
+        "Taper Ratio",
+        "Aspect Ratio",
+        "Sweep [deg]",
+        "Tip Twist [deg]",
+        "A",
+        "Root Chord [m]",
+        "Tip Chord [m]",
+        "Trim AoA [deg]",
+        "Velocity [m/s]",
+        "Aerodynamic Efficiency",
+        "Cma",
+        "Clb",
+        "Cnb",
+    ],
+    "Value": [
+        geom["taper_ratio"],
+        geom["aspect_ratio"],
+        np.rad2deg(geom["sweep"]),
+        np.rad2deg(geom["tip_twist"]),
+        geom["A"],
+        geom["root_chord"],
+        geom["tip_chord"],
+        np.rad2deg(trim["aoa"]),
+        velocity,
+        aero["aero_efficiency"],
+        aero["Cma"],
+        aero["Clb"],
+        aero["Cnb"],
+    ]
+}
+
+df = pd.DataFrame(summary_data)
+
+# Format display
+pd.set_option("display.float_format", "{:.6f}".format)
+
+print("\nOPTIMUM DESIGN SUMMARY")
+print("=" * 60)
+print(df.to_string(index=False))
+
+print("\nOPTIMUM DESIGN VECTOR")
+print(f"x = np.array({[round(val, 6) for val in best_x]})")
+print("=" * 60)
