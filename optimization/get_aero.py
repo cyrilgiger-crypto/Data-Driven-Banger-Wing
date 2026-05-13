@@ -56,6 +56,8 @@ def get_aero(
 
     if verbose:
         print("-" * 30)
+        print("Lift (N):", f"{_scalar(results['L']):.4g}") # Added
+        print("CL:", f"{_scalar(results['CL']):.4g}") # Added
         print("Aero Efficiency:", f"{_scalar(aero_efficiency):.4g}")
         print("dCm/da:", f"{_scalar(results['Cma']):.4g}", " < 0")
         print("dCl/db:", f"{_scalar(results['Clb']):.4g}", " < 0")
@@ -113,6 +115,7 @@ def get_aero(
 
     return {
         "aero_efficiency": aero_efficiency,
+        "CL": _scalar(results["CL"]), # Added
         "Cm": _scalar(results["Cm"]),
         "Cma": _scalar(results["Cma"]),
         "Clb": _scalar(results["Clb"]),
@@ -122,15 +125,15 @@ def get_aero(
 
 if __name__ == "__main__":
     span = 0.8
-    taper_ratio = 0.8751
-    aspect_ratio = 12.5680
+    taper_ratio = 0.5883
+    aspect_ratio = 12.2334
     root_chord = 2 * 0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
-    sweep = 0.3972
-    aoa = 0.08
-    tip_twist = -0.0073
-    A = 0.5460
-    velocity = 20
+    sweep = 0.4815
+    aoa = 0.0436
+    tip_twist = -0.0318
+    A = 0.3701
+    velocity = 25
     enable_plot = True
     verbose = True
 
