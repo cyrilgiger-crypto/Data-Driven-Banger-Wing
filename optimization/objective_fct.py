@@ -103,10 +103,10 @@ def objective(
     if verbose:
         print(
             f"Solved AoA: {aoa:.4g} rad "
-            f"({aoa_deg:.4g} deg), "
-            f"converged={trim['converged']}, "
-            f"iterations={trim['iterations']}, "
-            f"evals={trim['evaluations']}"
+            #f"({aoa_deg:.4g} deg), "
+            #f"converged={trim['converged']}, "
+            #f"iterations={trim['iterations']}, "
+            #f"evals={trim['evaluations']}"
         )
 
         print(f"Aero Efficiency: {aero_eff:.4g}")
