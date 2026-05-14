@@ -6,7 +6,7 @@ from scipy.optimize import differential_evolution
 from objective_fct import objective
 from aoa_solver import solve_trim_aoa_from_geometry
 from get_aero import get_aero
-
+from velocity_solver import solve_velocity_from_geometry # Added
 
 # ============================================================
 # GLOBAL SETTINGS
@@ -70,7 +70,6 @@ def evaluate_design(x, verbose=False, enable_plot=False):
         2. Solve trim AoA
         3. Evaluate aerodynamics
     """
-
     geom = unpack_design(x)
 
     # --------------------------------------------------------
@@ -204,7 +203,7 @@ if __name__ == "__main__":
 
         # Evolution settings
         strategy="rand1bin",
-        maxiter=3,
+        maxiter=2,
         popsize=5,
 
         mutation=(0.7, 1.9),
