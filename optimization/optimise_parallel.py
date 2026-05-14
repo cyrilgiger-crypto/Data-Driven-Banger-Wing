@@ -4,9 +4,9 @@ import numpy as np
 from scipy.optimize import differential_evolution
 
 from objective_fct import objective
-from aoa_solver import solve_trim_aoa_from_geometry
+from aoa_solver import solve_trim_aoa
 from get_aero import get_aero
-from velocity_solver import solve_velocity_from_geometry # Added
+from build_wing import build_wing
 
 # ============================================================
 # GLOBAL SETTINGS
@@ -76,12 +76,16 @@ def evaluate_design(x, verbose=False, enable_plot=False):
     # Solve trimmed AoA
     # --------------------------------------------------------
 
-    trim = solve_trim_aoa_from_geometry(
+    airplane = build_wing(
+        span=SPAN,
         root_chord=geom["root_chord"],
         tip_chord=geom["tip_chord"],
         sweep=geom["sweep"],
         tip_twist=geom["tip_twist"],
         A=geom["A"],
+    )
+    trim = solve_trim_aoa(
+        airplane=airplane,
         #velocity=VELOCITY,
         target_cm=0.0,
     )
@@ -260,3 +264,4 @@ if __name__ == "__main__":
     print(f"])")
 
     print("=" * 60)
+

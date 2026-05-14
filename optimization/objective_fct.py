@@ -1,7 +1,5 @@
 import numpy as np
 from get_aero import get_aero
-from aoa_solver import solve_trim_aoa_from_geometry
-from velocity_solver import solve_velocity_from_geometry
 from joint_solver import solve_aoa_and_velocity
 from build_wing import build_wing
 
@@ -48,9 +46,16 @@ def objective(
     aoa = sol.get("aoa", np.nan)
     velocity = sol.get("velocity", np.nan)
     converged = bool(sol.get("converged", False))
+    trim_converged = bool(sol.get("trim_converged", converged))
+    lift_converged = bool(sol.get("lift_converged", False))
+
+    if not trim_converged:
+        trim_penalty = 500   
+    else:
+        trim_penalty = 0
+
 
     aoa_deg = np.rad2deg(float(aoa))
-    penalty_convergence = 400.0 if not converged else 0.0
 
     # ------------------------------------------------------------------
     # Aero evaluation
@@ -80,7 +85,7 @@ def objective(
     L   = results["L"]
 
     # Objective function weights
-    w_Cm   = 0
+    w_Cm  = 0
     w_Cma = 300 
     w_Clb = 200
     w_Cnb = 200
@@ -102,37 +107,40 @@ def objective(
 
     # final objective
     obj_raw = (
-        -aero_eff
+        - aero_eff
         + contrib_lift
         + contrib_stability
-        + penalty_convergence
+        + contrib_Cm
+        + trim_penalty
     )
     obj = float(np.clip(obj_raw, -1e4, MAX_RETURNED_OBJECTIVE))
 
     if verbose:
+        print("-"*60)
         print(
             f"Solved AoA: {aoa:.4g} rad "
             f"({aoa_deg:.4g} deg), "
             f"converged={converged}, "
+            f"trim_converged={trim_converged}, "
+            f"lift_converged={lift_converged}, "
             f"velocity={velocity:.4g} m/s"
         )
 
         print(f"Aero Efficiency: {aero_eff:.4g}")
-        print(f"Cm: {Cm:.4g}")
+        print(f"Cm: {Cm:.4g}" f" (contribution: {contrib_Cm:.4f})")
         print(f"Cma: {Cma:.4g} (target: {Cma_target:.4g}, contribution: {contrib_Cma:.4g})")
         print(f"Clb: {Clb:.4g} (target: {Clb_target:.4g}, contribution: {contrib_Clb:.4g})")
         print(f"Cnb: {Cnb:.4g} (target: {Cnb_target:.4g}, contribution: {contrib_Cnb:.4g})")
         print(f"Lift: {L:.4g} N (target: {9.81*weight_kg:.4g} N, contribution: {contrib_lift:.4g})")
-        print(f"Convergence penalty: {penalty_convergence:.4g}")
         print(f"Objective Value: {obj:.4g}")
-        print("------------------------------------------------")
+        print("-"*60)
 
     return obj
 
 if __name__ == "__main__":
     # input vector from optimization
     # x = np.array([0.516116, 13.111064, 0.5, -0.056322, 1.0]) # WORKING!!!!!!!!
-    x = np.array([0.194397, 12.664931, 0.497363, -0.037704, 0.791164])
+    x = np.array([0.326866, 12.844276, 0.487205, -0.046214, 0.0])
 
     # default stability targets
     stability_targets = {
@@ -141,4 +149,3 @@ if __name__ == "__main__":
     "Cnb":  0.02,
     }
     obj_value = objective(x, stability_targets, verbose=True, enable_plot=True)
-    print(f"Objective Value for example design: {obj_value:.4f}")

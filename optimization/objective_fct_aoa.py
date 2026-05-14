@@ -1,6 +1,7 @@
 import numpy as np
 from get_aero import get_aero
-from aoa_solver import solve_trim_aoa_from_geometry
+from aoa_solver import solve_trim_aoa
+from build_wing import build_wing
 from velocity_solver import solve_velocity_from_geometry
 
 def objective(
@@ -26,12 +27,16 @@ def objective(
     # ------------------------------------------------------------------
     # Solve trim AoA
     # ------------------------------------------------------------------
-    trim = solve_trim_aoa_from_geometry(
+    airplane = build_wing(
+        span=0.8,
         root_chord=root_chord,
         tip_chord=tip_chord,
         sweep=sweep,
         tip_twist=tip_twist,
         A=A,
+    )
+    trim = solve_trim_aoa(
+        airplane=airplane,
         velocity=velocity,
         target_cm=0.0,
     )

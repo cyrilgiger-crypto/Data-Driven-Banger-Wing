@@ -6,7 +6,8 @@ from joblib import Parallel, delayed
 
 # Re-using your existing logic
 from objective_fct import objective
-from aoa_solver import solve_trim_aoa_from_geometry
+from joint_solver import solve_aoa_and_velocity
+from build_wing import build_wing
 from get_aero import get_aero
 
 # ============================================================
@@ -47,21 +48,30 @@ def unpack_design(x):
     }
 
 def evaluate_design(x, verbose=False, enable_plot=False):
+
     geom = unpack_design(x)
-    trim = solve_trim_aoa_from_geometry(
-        root_chord=geom["root_chord"], tip_chord=geom["tip_chord"],
-        sweep=geom["sweep"], tip_twist=geom["tip_twist"],
-        A=geom["A"], target_cm=0.0,
+
+    airplane = build_wing(
+        span=SPAN,
+        root_chord=geom["root_chord"],
+        tip_chord=geom["tip_chord"],
+        sweep=geom["sweep"],
+        tip_twist=geom["tip_twist"],
+        A=geom["A"],
     )
 
-    if trim is None or not trim.get("converged", False) or "aoa" not in trim:
-        raise RuntimeError("Trim solver failed.")
+    sol = solve_aoa_and_velocity(airplane=airplane, target_lift=9.81 * WEIGHT_KG, target_cm=0.0)
 
-    aoa = float(trim["aoa"])
+    if sol is None or not sol.get("converged", False) or "aoa" not in sol:
+        print("Trim solver failed for this design.")
+        # raise RuntimeError("Trim solver failed.")
+
+    aoa = float(sol["aoa"])
+    velocity = float(sol["velocity"])
     aero = get_aero(
         span=SPAN, root_chord=geom["root_chord"], tip_chord=geom["tip_chord"],
         sweep=geom["sweep"], aoa=aoa, tip_twist=geom["tip_twist"],
-        A=geom["A"], enable_plot=enable_plot, verbose=False,
+        A=geom["A"], velocity=velocity, enable_plot=enable_plot, verbose=False,
     )
 
     if verbose:
@@ -70,7 +80,7 @@ def evaluate_design(x, verbose=False, enable_plot=False):
         print(f"Trim AoA: {np.rad2deg(aoa):.4f} deg, Eff: {aero['aero_efficiency']:.4f}")
         print(f"Cma: {aero['Cma']:.4f}, Clb: {aero['Clb']:.4f}, Cnb: {aero['Cnb']:.4f}")
 
-    return geom, trim, aero
+    return geom, sol, aero
 
 def fitness_wrapper(x):
     HUGE_PENALTY = 2e4
@@ -154,7 +164,7 @@ if __name__ == "__main__":
     print(f"Objective Value : {best_fun:.6f}")
 
     # Re-evaluate the best design
-    geom, trim, aero = evaluate_design(best_x, verbose=True)
+    geom, sol, aero = evaluate_design(best_x, verbose=True)
 
     print("\nOPTIMUM DESIGN VECTOR")
     print(f"x = np.array({[round(val, 6) for val in best_x]})")

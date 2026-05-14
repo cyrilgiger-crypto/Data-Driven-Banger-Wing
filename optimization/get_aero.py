@@ -18,7 +18,7 @@ def get_aero(
     root_chord: float = 0.2,
     tip_chord: float = 0.1,
     sweep: float = np.deg2rad(-45),
-    aoa: float = 2,
+    aoa: float = np.deg2rad(2.5),
     tip_twist: float = -1 * np.pi / 180,
     A: float = 0.5,
     c: float = 0.5,
