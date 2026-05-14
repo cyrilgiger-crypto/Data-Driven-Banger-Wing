@@ -9,7 +9,7 @@ def solve_aoa_and_velocity(
     target_lift: float = 8.0,
     target_cm: float = 0.0,
     aoa_bounds: tuple = (0, np.deg2rad(5)), # 0 to 5 degrees
-    velocity_bounds: tuple = (19.0, 25.0),
+    velocity_bounds: tuple = (15.0, 25.0),
     tol_cm: float = 0.01,
     tol_lift: float = 0.01,
     max_outer_iter: int = 12,

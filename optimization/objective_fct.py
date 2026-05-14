@@ -11,7 +11,6 @@ def objective(
     stability_targets: dict,
     verbose: bool = False,
     weight_kg: float = 1,
-    velocity: float = 20,
     enable_plot: bool = False
 ) -> float:
 
@@ -39,7 +38,7 @@ def objective(
     # 2. Use the joint solver
     sol = solve_aoa_and_velocity(
         airplane=airplane,
-        target_lift=9.81 * weight_kg, # Or 8.0 as per your requirement
+        target_lift=9.81 * weight_kg,
         target_cm=0.0
     )
 
@@ -50,12 +49,7 @@ def objective(
     velocity = sol.get("velocity", np.nan)
     converged = bool(sol.get("converged", False))
 
-    if not np.isfinite(aoa) or not np.isfinite(velocity):
-        return HARD_FAIL_PENALTY
-
     aoa_deg = np.rad2deg(float(aoa))
-    aoa_violation_deg = max(0.0, -aoa_deg) + max(0.0, aoa_deg - 5.0)
-    penalty_aoa = 200.0 * aoa_violation_deg ** 2
     penalty_convergence = 400.0 if not converged else 0.0
 
     # ------------------------------------------------------------------
@@ -74,6 +68,7 @@ def objective(
             verbose=False
         )
     except Exception:
+        print("Aero evaluation failed.")
         return HARD_FAIL_PENALTY
 
     # unpack results
@@ -110,7 +105,6 @@ def objective(
         -aero_eff
         + contrib_lift
         + contrib_stability
-        + penalty_aoa
         + penalty_convergence
     )
     obj = float(np.clip(obj_raw, -1e4, MAX_RETURNED_OBJECTIVE))
@@ -129,7 +123,6 @@ def objective(
         print(f"Clb: {Clb:.4g} (target: {Clb_target:.4g}, contribution: {contrib_Clb:.4g})")
         print(f"Cnb: {Cnb:.4g} (target: {Cnb_target:.4g}, contribution: {contrib_Cnb:.4g})")
         print(f"Lift: {L:.4g} N (target: {9.81*weight_kg:.4g} N, contribution: {contrib_lift:.4g})")
-        print(f"AoA penalty: {penalty_aoa:.4g}")
         print(f"Convergence penalty: {penalty_convergence:.4g}")
         print(f"Objective Value: {obj:.4g}")
         print("------------------------------------------------")
@@ -138,7 +131,8 @@ def objective(
 
 if __name__ == "__main__":
     # input vector from optimization
-    x = np.array([0.516116, 13.111064, 0.5, -0.056322, 1.0]) # WORKING!!!!!!!!
+    # x = np.array([0.516116, 13.111064, 0.5, -0.056322, 1.0]) # WORKING!!!!!!!!
+    x = np.array([0.194397, 12.664931, 0.497363, -0.037704, 0.791164])
 
     # default stability targets
     stability_targets = {

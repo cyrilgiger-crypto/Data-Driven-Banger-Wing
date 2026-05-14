@@ -82,7 +82,7 @@ def fitness_wrapper(x):
     try:
         obj = objective(
             x=x, stability_targets=stability_targets,
-            verbose=False, weight_kg=WEIGHT_KG, enable_plot=False,
+            verbose=True, weight_kg=WEIGHT_KG, enable_plot=False,
         )
         val = float(obj) if np.isfinite(obj) else HUGE_PENALTY
         _EVAL_CACHE[key] = val
