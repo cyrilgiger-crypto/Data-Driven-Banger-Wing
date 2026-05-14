@@ -27,9 +27,6 @@ def get_aero(
     enable_plot: bool = False,
     verbose: bool = True,
 ) -> Dict[str, float]:
-    plt.show(block=False)
-    plt.pause(0.1)
-
     airplane, meta = build_wing(
         span=span,
         root_chord=root_chord,
@@ -67,6 +64,10 @@ def get_aero(
         print("Cm: ", f"{_scalar(results['Cm']):.4g}", " = 0")
 
     if enable_plot:
+        # Only touch interactive plotting when explicitly requested.
+        plt.show(block=False)
+        plt.pause(0.1)
+
         y_stations = np.asarray(meta["y_stations"])
         half_span = float(meta["half_span"])
         n_sections = int(meta["n_sections"])
@@ -125,14 +126,14 @@ def get_aero(
 
 if __name__ == "__main__":
     span = 0.8
-    taper_ratio = 0.5883
-    aspect_ratio = 12.2334
+    taper_ratio = 0.797662
+    aspect_ratio = 4.0
     root_chord = 2 * 0.8 / (aspect_ratio * (1 + taper_ratio))
     tip_chord = root_chord * taper_ratio
-    sweep = 0.4815
-    aoa = 0.0436
-    tip_twist = -0.0318
-    A = 0.3701
+    sweep = -0.435587
+    aoa = 0.9375
+    tip_twist = -0.043752
+    A = 0.939131
     velocity = 40
     enable_plot = True
     verbose = True

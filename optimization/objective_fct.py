@@ -43,26 +43,38 @@ def objective(
         target_cm=0.0
     )
 
-    if not sol["converged"]:
-        return 1e6 # Return HUGE_PENALTY
+    HARD_FAIL_PENALTY = 5e3
+    MAX_RETURNED_OBJECTIVE = 2e4
 
-    aoa = sol["aoa"]
-    velocity = sol["velocity"]
+    aoa = sol.get("aoa", np.nan)
+    velocity = sol.get("velocity", np.nan)
+    converged = bool(sol.get("converged", False))
+
+    if not np.isfinite(aoa) or not np.isfinite(velocity):
+        return HARD_FAIL_PENALTY
+
+    aoa_deg = np.rad2deg(float(aoa))
+    aoa_violation_deg = max(0.0, -aoa_deg) + max(0.0, aoa_deg - 5.0)
+    penalty_aoa = 200.0 * aoa_violation_deg ** 2
+    penalty_convergence = 400.0 if not converged else 0.0
 
     # ------------------------------------------------------------------
     # Aero evaluation
     # ------------------------------------------------------------------
-    results = get_aero(
-        tip_chord=tip_chord,
-        root_chord=root_chord,
-        sweep=sweep,
-        aoa=aoa,
-        tip_twist=tip_twist,
-        A=A,
-        velocity=velocity,
-        enable_plot=enable_plot,
-        verbose=False
-    )
+    try:
+        results = get_aero(
+            tip_chord=tip_chord,
+            root_chord=root_chord,
+            sweep=sweep,
+            aoa=aoa,
+            tip_twist=tip_twist,
+            A=A,
+            velocity=velocity,
+            enable_plot=enable_plot,
+            verbose=False
+        )
+    except Exception:
+        return HARD_FAIL_PENALTY
 
     # unpack results
     aero_eff = results["aero_efficiency"]
@@ -94,19 +106,21 @@ def objective(
     )
 
     # final objective
-    obj = (
+    obj_raw = (
         -aero_eff
         + contrib_lift
         + contrib_stability
+        + penalty_aoa
+        + penalty_convergence
     )
+    obj = float(np.clip(obj_raw, -1e4, MAX_RETURNED_OBJECTIVE))
 
     if verbose:
         print(
             f"Solved AoA: {aoa:.4g} rad "
-            #f"({aoa_deg:.4g} deg), "
-            #f"converged={trim['converged']}, "
-            #f"iterations={trim['iterations']}, "
-            #f"evals={trim['evaluations']}"
+            f"({aoa_deg:.4g} deg), "
+            f"converged={converged}, "
+            f"velocity={velocity:.4g} m/s"
         )
 
         print(f"Aero Efficiency: {aero_eff:.4g}")
@@ -115,7 +129,22 @@ def objective(
         print(f"Clb: {Clb:.4g} (target: {Clb_target:.4g}, contribution: {contrib_Clb:.4g})")
         print(f"Cnb: {Cnb:.4g} (target: {Cnb_target:.4g}, contribution: {contrib_Cnb:.4g})")
         print(f"Lift: {L:.4g} N (target: {9.81*weight_kg:.4g} N, contribution: {contrib_lift:.4g})")
+        print(f"AoA penalty: {penalty_aoa:.4g}")
+        print(f"Convergence penalty: {penalty_convergence:.4g}")
         print(f"Objective Value: {obj:.4g}")
         print("------------------------------------------------")
 
     return obj
+
+if __name__ == "__main__":
+    # input vector from optimization
+    x = np.array([0.516116, 13.111064, 0.5, -0.056322, 1.0]) # WORKING!!!!!!!!
+
+    # default stability targets
+    stability_targets = {
+    "Cma": -0.2,
+    "Clb": -0.1,
+    "Cnb":  0.02,
+    }
+    obj_value = objective(x, stability_targets, verbose=True, enable_plot=True)
+    print(f"Objective Value for example design: {obj_value:.4f}")

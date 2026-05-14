@@ -30,6 +30,8 @@ bounds = [
     (0.0, 1.0),     # A
 ]
 
+_EVAL_CACHE = {}
+
 # ============================================================
 # HELPER FUNCTIONS (Identical to original)
 # ============================================================
@@ -71,13 +73,20 @@ def evaluate_design(x, verbose=False, enable_plot=False):
     return geom, trim, aero
 
 def fitness_wrapper(x):
-    HUGE_PENALTY = 1e9
+    HUGE_PENALTY = 2e4
+    key = tuple(float(f"{xi:.8f}") for xi in x)
+    cached = _EVAL_CACHE.get(key)
+    if cached is not None:
+        return cached
+
     try:
         obj = objective(
             x=x, stability_targets=stability_targets,
             verbose=False, weight_kg=WEIGHT_KG, enable_plot=False,
         )
-        return obj if np.isfinite(obj) else HUGE_PENALTY
+        val = float(obj) if np.isfinite(obj) else HUGE_PENALTY
+        _EVAL_CACHE[key] = val
+        return val
     except Exception:
         return HUGE_PENALTY
 
@@ -88,9 +97,13 @@ def fitness_wrapper(x):
 if __name__ == "__main__":
     
     # Settings for BO
-    N_ITERATIONS = 10      # Number of batches
+    N_ITERATIONS = 30      # Number of batches
     BATCH_SIZE = 4         # Number of parallel workers/evaluations per batch
-    N_INITIAL_POINTS = 10  # Random points to seed the GP model
+    N_INITIAL_POINTS = 50  # LHS points to seed the GP model
+    INITIAL_GENERATOR = "lhs"
+    GLOBAL_RANDOM_STATE = 42
+
+    _EVAL_CACHE = {}
 
     print(f"\nStarting Bayesian Optimisation ({N_ITERATIONS * BATCH_SIZE} total evals)...")
     print("=" * 60)
@@ -103,7 +116,8 @@ if __name__ == "__main__":
         base_estimator="GP",
         acq_func="EI", 
         n_initial_points=N_INITIAL_POINTS,
-        random_state=42
+        initial_point_generator=INITIAL_GENERATOR,
+        random_state=GLOBAL_RANDOM_STATE
     )
 
     for i in range(N_ITERATIONS):
@@ -119,7 +133,11 @@ if __name__ == "__main__":
         # 3. TELL: Feed the results back into the optimizer to update the surrogate model
         result = opt.tell(x_next, y_next)
 
-        print(f"Iteration {i+1}/{N_ITERATIONS} | Best so far: {result.fun:.6f}")
+        print(
+            f"Iteration {i+1}/{N_ITERATIONS} | "
+            f"Best so far: {result.fun:.6f} | "
+            f"Unique evals: {len(_EVAL_CACHE)}"
+        )
 
     # ========================================================
     # FINAL RESULTS
